@@ -18,5 +18,8 @@
   "homepage": "https://github.com/krd4/BookDirectory#readme",
   "dependencies": {
     "immutable": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18"
   }
 }

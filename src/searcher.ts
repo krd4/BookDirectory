@@ -1,5 +1,22 @@
 import { List } from "immutable";
 import { Book, Directory } from "./Model";
+import * as path from 'path';
+
+function goToNextDir(t: Directory, dir_name: string): Directory {
+    return getDirectories(t).filter(item => item.name == dir_name).first(new Directory("", List()))
+}
+
+export function goToBook(t: Directory, _path: string): Book {
+    let info = path.parse(_path)
+
+    return getBooks(info.dir
+        .split("/")
+        .filter(s => s.length != 0)
+        .reduce((_t, next_dir) => goToNextDir(_t, next_dir), t)
+    )
+        .filter(item => item.name == info.name)
+        .first(new Book("", false, false)) as Book
+}
 
 export function getBooks(t: Directory): List<Book> {
     return t.children.filter(item => item instanceof Book) as List<Book>

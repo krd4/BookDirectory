@@ -1,7 +1,7 @@
 import { Book, Directory } from "./Model";
 import { toJson, fromJson } from "./json";
 import { List } from "immutable";
-import { getAllBooks } from "./searcher";
+import { getAllBooks, goToBook } from "./searcher";
 
 const root = new Directory("root", List([
     new Book("Mastering Typescript", true, true),
@@ -14,3 +14,4 @@ const root = new Directory("root", List([
 console.log(root)
 console.log(fromJson(toJson(root)))
 getAllBooks(root).map(console.log)
+console.log(goToBook(root, "/Physics/Introduction to classical mechanics"))
