@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/krd4/BookDirectory/issues"
   },
-  "homepage": "https://github.com/krd4/BookDirectory#readme"
+  "homepage": "https://github.com/krd4/BookDirectory#readme",
+  "dependencies": {
+    "immutable": "^4.2.2"
+  }
 }

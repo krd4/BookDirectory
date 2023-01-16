@@ -1,12 +1,16 @@
-export class Book {
-    name: string;
+import { List } from "immutable";
 
-    constructor(name: string) { this.name = name; }
+export class Book {
+    constructor(
+        public name: string,
+        public reading: boolean,
+        public favorite: boolean
+    ) { }
 }
 
 export class Directory {
-    name: string;
-    children: Array<Book | Directory>;
-
-    constructor(name: string, children: Array<Book | Directory>) { this.name = name; this.children = children; }
+    constructor(
+        public name: string,
+        public children: List<Book | Directory>
+    ) { }
 }
