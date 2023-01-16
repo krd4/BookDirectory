@@ -13,4 +13,4 @@ const root = new Directory("root", List([
 console.log(root)
 console.log(fromJson(toJson(root)))
 console.log(root.getAllBooks())
-console.log(root.goToBook("/Physics/Special relativity"))
+console.log(root.getBook("Mastering Typescript"))

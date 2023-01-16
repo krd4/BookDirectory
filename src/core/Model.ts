@@ -44,15 +44,40 @@ export class Directory {
         return this.getDirectories().filter(item => item.name == dir_name).first(this)
     }
 
-    goToBook(_path: string): Book {
+    getEnclosingDirectory(_path: string): Directory {
         let info = path.parse(_path)
 
         return info.dir
             .split("/")
             .filter(s => s.length != 0)
             .reduce((_t, next_dir) => _t.goToNextDir(next_dir), this as Directory)
+    }
+
+    getBook(_path: string): Book {
+        let info = path.parse(_path)
+
+        return this.getEnclosingDirectory(_path)
             .getBooks()
             .filter(item => item.name == info.name)
             .first(new Book("", false, false)) as Book
+    }
+
+    getDirectory(_path: string): Directory {
+        return this.getEnclosingDirectory(path.join(_path, "dummy.txt"))
+    }
+
+    private _update(target: Book | Directory, item: Book | Directory): Directory {
+        let i = this.children.findIndex((v, k, iter) => v == target)
+
+        if (i)
+            return new Directory(
+                this.name,
+                this.children.update(
+                    i as number,
+                    v => item
+                )
+            )
+
+        return this
     }
 }
