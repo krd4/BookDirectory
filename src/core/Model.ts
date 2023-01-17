@@ -83,9 +83,28 @@ export class Directory {
         return this
     }
 
-    update(_path: string, item: Book | Directory): Directory {
+    _remove(target: Book | Directory): Directory {
+        let i = this.children.findIndex((v, k, iter) => v == target)
+
+        if (i)
+            return new Directory(
+                this.name,
+                this.children.remove(i)
+            )
+
+        return this
+    }
+
+    _add(target: Book | Directory): Directory {
+        return new Directory(
+            this.name,
+            this.children.push(target)
+        )
+    }
+
+    private edit(_path: string, updator: (dirs: List<Book | Directory>) => Directory): Directory {
         const loop = (dirs: List<Directory>): Directory => {
-            if (dirs.size == 2) return (dirs.first() as Directory)._update(dirs.last(), item)
+            if (dirs.size <= 2) return updator(dirs)
             return (dirs.first() as Directory)
                 ._update(
                     dirs.get(1) as Directory,
@@ -99,7 +118,19 @@ export class Directory {
             List(
                 _.range(1, info.size + 1)
                     .map(i => this.getDirectory(info.take(i).join("/")))
-            ).push(this)
+            ).insert(0, this)
         )
+    }
+
+    update(_path: string, item: Book | Directory): Directory {
+        return this.edit(_path, dirs => (dirs.first() as Directory)._update(dirs.last(), item))
+    }
+
+    remove(_path: string): Directory {
+        return this.edit(_path, dirs => (dirs.first() as Directory)._remove(dirs.last()))
+    }
+
+    add(_path: string, item: Book | Directory): Directory {
+        return this.edit(_path, dirs => (dirs.last() as Directory)._add(item))
     }
 }

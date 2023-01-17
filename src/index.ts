@@ -16,3 +16,18 @@ console.log(root.getAllBooks())
 console.log(root.getBook("Mastering Typescript"))
 console.log(root.update("Mastering Typescript", new Book("Typescript Design Patterns", true, true)).getBook("Typescript Design Patterns"))
 console.log(root.update("Physics/Special relativity", new Book("General relativity", true, true)).getBook("Physics/General relativity"))
+console.log(root.remove("Physics/Special relativity").getBook("Physics/Special relativity"))
+console.log(
+    root
+        .add(
+            "",
+            new Directory("Chemistry", List([
+                new Book("Organic Chemistry", true, false)
+            ]))
+        )
+        .add(
+            "Chemistry",
+            new Book("Inorganic Chemistry", false, false)
+        )
+        .getBook("Chemistry/Inorganic Chemistry")
+)
