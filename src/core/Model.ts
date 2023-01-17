@@ -32,7 +32,8 @@ export class Directory {
         const loop = (_t: Book | Directory, books: List<Book>): List<Book> => {
             if (_t instanceof Book) return books.push(_t)
             else if (_t instanceof Directory)
-                return books.concat(this.getBooks())
+                return books
+                    .concat(this.getBooks())
                     .concat(this.getDirectories().flatMap(this.getAllBooks))
 
             return List()
@@ -85,11 +86,20 @@ export class Directory {
     update(_path: string, item: Book | Directory): Directory {
         const loop = (dirs: List<Directory>): Directory => {
             if (dirs.size == 2) return (dirs.first() as Directory)._update(dirs.last(), item)
-            return (dirs.first() as Directory)._update(dirs.get(1) as Directory, loop(dirs.rest()))
+            return (dirs.first() as Directory)
+                ._update(
+                    dirs.get(1) as Directory,
+                    loop(dirs.rest())
+                )
         }
 
         const info = List(_path.split("/").filter(s => s.length != 0))
 
-        return loop(List(_.range(1, info.size + 1).map(i => this.getDirectory(info.take(i).join("/")))).push(this))
+        return loop(
+            List(
+                _.range(1, info.size + 1)
+                    .map(i => this.getDirectory(info.take(i).join("/")))
+            ).push(this)
+        )
     }
 }
