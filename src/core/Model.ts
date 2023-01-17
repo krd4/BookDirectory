@@ -1,5 +1,6 @@
 import { List } from "immutable";
 import * as path from 'path';
+import _ from 'lodash';
 
 export class Book {
     constructor(
@@ -66,7 +67,7 @@ export class Directory {
         return this.getEnclosingDirectory(path.join(_path, "dummy.txt"))
     }
 
-    private _update(target: Book | Directory, item: Book | Directory): Directory {
+    _update(target: Book | Directory, item: Book | Directory): Directory {
         let i = this.children.findIndex((v, k, iter) => v == target)
 
         if (i)
@@ -79,5 +80,16 @@ export class Directory {
             )
 
         return this
+    }
+
+    update(_path: string, item: Book | Directory): Directory {
+        const loop = (dirs: List<Directory>): Directory => {
+            if (dirs.size == 2) return (dirs.first() as Directory)._update(dirs.last(), item)
+            return (dirs.first() as Directory)._update(dirs.get(1) as Directory, loop(dirs.rest()))
+        }
+
+        const info = List(_path.split("/").filter(s => s.length != 0))
+
+        return loop(List(_.range(1, info.size + 1).map(i => this.getDirectory(info.take(i).join("/")))).push(this))
     }
 }
