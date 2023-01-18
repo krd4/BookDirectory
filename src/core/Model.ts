@@ -1,20 +1,41 @@
 import { List } from "immutable";
 import * as path from 'path';
 import _ from 'lodash';
+import { ISerializable } from "./Serializer";
 
-export class Book {
+export class Book implements ISerializable {
     constructor(
         public name: string,
         public reading: boolean,
         public favorite: boolean
     ) { }
+    toJson(): Object {
+        return {
+            "name": this.name,
+            "reading": this.reading,
+            "favorite": this.favorite
+        }
+    }
+    fromJson(t: any): Book {
+        throw new Error("Method not implemented.");
+    }
 }
 
-export class Directory {
+export class Directory implements ISerializable {
     constructor(
         public name: string,
         public children: List<Book | Directory>
     ) { }
+
+    toJson(): Object {
+        return {
+            "name": this.name,
+            "children": this.children.map(c => c.toJson()).toArray()
+        }
+    }
+    fromJson(t: any): Directory {
+        throw new Error("Method not implemented.");
+    }
 
     addItem(item: Book | Directory): Directory {
         return new Directory(this.name, this.children.push(item))
@@ -102,9 +123,9 @@ export class Directory {
         )
     }
 
-    private edit(_path: string, updator: (dirs: List<Book | Directory>) => Directory): Directory {
+    private edit(_path: string, updateOn: number, updator: (dirs: List<Book | Directory>) => Directory): Directory {
         const loop = (dirs: List<Directory>): Directory => {
-            if (dirs.size <= 2) return updator(dirs)
+            if (dirs.size == updateOn) return updator(dirs)
             return (dirs.first() as Directory)
                 ._update(
                     dirs.get(1) as Directory,
@@ -123,14 +144,14 @@ export class Directory {
     }
 
     update(_path: string, item: Book | Directory): Directory {
-        return this.edit(_path, dirs => (dirs.first() as Directory)._update(dirs.last(), item))
+        return this.edit(_path, 2, dirs => (dirs.first() as Directory)._update(dirs.last(), item))
     }
 
     remove(_path: string): Directory {
-        return this.edit(_path, dirs => (dirs.first() as Directory)._remove(dirs.last()))
+        return this.edit(_path, 2, dirs => (dirs.first() as Directory)._remove(dirs.last()))
     }
 
     add(_path: string, item: Book | Directory): Directory {
-        return this.edit(_path, dirs => (dirs.last() as Directory)._add(item))
+        return this.edit(_path, 1, dirs => (dirs.first() as Directory)._add(item))
     }
 }

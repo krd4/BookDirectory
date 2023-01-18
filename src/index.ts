@@ -1,5 +1,4 @@
 import { Book, Directory } from "./core/Model";
-import { toJson, fromJson } from "./core/json";
 import { List } from "immutable";
 
 const root = new Directory("root", List([
@@ -11,12 +10,12 @@ const root = new Directory("root", List([
     )]))
 
 console.log(root)
-console.log(fromJson(toJson(root)))
+console.log(root.toJson())
 console.log(root.getAllBooks())
 console.log(root.getBook("Mastering Typescript"))
-console.log(root.update("Mastering Typescript", new Book("Typescript Design Patterns", true, true)).getBook("Typescript Design Patterns"))
-console.log(root.update("Physics/Special relativity", new Book("General relativity", true, true)).getBook("Physics/General relativity"))
-console.log(root.remove("Physics/Special relativity").getBook("Physics/Special relativity"))
+console.log(root.update("Mastering Typescript", new Book("Typescript Design Patterns", true, true)).toJson())
+console.log(root.update("Physics/Special relativity", new Book("General relativity", true, true)).toJson())
+console.log(root.remove("Physics/Special relativity").toJson())
 console.log(
     root
         .add(
@@ -29,5 +28,5 @@ console.log(
             "Chemistry",
             new Book("Inorganic Chemistry", false, false)
         )
-        .getBook("Chemistry/Inorganic Chemistry")
+        .toJson()
 )
